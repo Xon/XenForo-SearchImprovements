@@ -2,6 +2,25 @@
 
 class SV_SearchImprovements_XenES_Search_SourceHandler_ElasticSearch extends XFCP_SV_SearchImprovements_XenES_Search_SourceHandler_ElasticSearch
 {
+    public function executeSearch($searchQuery, $titleOnly, array $processedConstraints, array $orderParts,
+        $groupByDiscussionType, $maxResults, XenForo_Search_DataHandler_Abstract $typeHandler = null)
+    {
+        SV_SearchImprovements_Api::install($this);
+        try
+        {
+            return parent::executeSearch($searchQuery, $titleOnly, $processedConstraints, $orderParts, $groupByDiscussionType, $maxResults, $typeHandler);
+        }
+        finally
+        {
+            SV_SearchImprovements_Api::uninstall();
+        }
+    }
+
+    public function searchHook($indexName, array &$dsl)
+    {
+        // hook point for arbitary DSL manipulation. not needed yet
+    }
+
     protected function _processConstraint(array &$dsl, $constraintName, array $constraint)
     {
         if (isset($constraint['range_query']))
