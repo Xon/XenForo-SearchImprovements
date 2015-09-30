@@ -10,14 +10,6 @@ class SV_SearchImprovements_Installer
         {
             throw new Exception("Require Enhanced Search to be installed and enabled");
         }
-
-        // if Elastic Search is installed, determine if we need to push optimized mappings for the search types
-        $mappings = $XenEs->getOptimizableMappings();
-        if ($mappings)
-        {
-            XenForo_Error::debug(var_export($mappings, true));
-            XenForo_Error::logException(new Exception("Please optimize mappings, and re-index all content types."));
-        }
     }
 
     public static function uninstall()

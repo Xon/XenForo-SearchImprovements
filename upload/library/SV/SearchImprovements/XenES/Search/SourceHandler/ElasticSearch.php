@@ -6,7 +6,7 @@ class SV_SearchImprovements_XenES_Search_SourceHandler_ElasticSearch extends XFC
     {
         if (isset($constraint['range_query']))
         {
-            return $this->_processRangeQueryConstraint($dsl, $constraintName, $constraint);
+            return $this->_processRangeQueryConstraint($dsl, $constraintName, $constraint['range_query']);
         }
         return parent::_processConstraint($dsl, $constraintName, $constraint);
     }
