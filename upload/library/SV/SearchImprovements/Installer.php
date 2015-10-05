@@ -10,10 +10,14 @@ class SV_SearchImprovements_Installer
         {
             throw new Exception("Require Enhanced Search to be installed and enabled");
         }
+
+        SV_Utils_Install::addColumn('xf_user_option', 'sv_default_search_order', "varchar(50) NOT NULL default ''");
     }
 
     public static function uninstall()
     {
         $db = XenForo_Application::getDb();
+
+        SV_Utils_Install::dropColumn('xf_user_option', 'sv_default_search_order');
     }
 }

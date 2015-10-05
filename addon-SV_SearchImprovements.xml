@@ -7,8 +7,10 @@
   <admin_template_modifications/>
   <code_events/>
   <code_event_listeners>
-    <listener event_id="load_class" execute_order="10" callback_class="SV_SearchImprovements_Listener" callback_method="load_class" active="1" hint="XenES_Search_SourceHandler_ElasticSearch" description="XenES_Search_SourceHandler_ElasticSearch"/>
-    <listener event_id="load_class" execute_order="10" callback_class="SV_SearchImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ControllerPublic_Search" description="XenForo_ControllerPublic_Search"/>
+    <listener event_id="load_class" execute_order="11" callback_class="SV_SearchImprovements_Listener" callback_method="load_class" active="1" hint="XenES_Search_SourceHandler_ElasticSearch" description="XenES_Search_SourceHandler_ElasticSearch"/>
+    <listener event_id="load_class_controller" execute_order="11" callback_class="SV_SearchImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ControllerPublic_Search" description="XenForo_ControllerPublic_Search"/>
+    <listener event_id="load_class" execute_order="11" callback_class="SV_SearchImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ControllerPublic_Account" description="XenForo_ControllerPublic_Account"/>
+    <listener event_id="load_class" execute_order="11" callback_class="SV_SearchImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_DataWriter_User" description="XenForo_DataWriter_User"/>
   </code_event_listeners>
   <cron/>
   <email_templates/>
@@ -19,11 +21,34 @@
     <permissions/>
     <interface_groups/>
   </permissions>
-  <phrases/>
+  <phrases>
+    <phrase title="default_search_options_explain" version_id="1000000" version_string="1.0.0"><![CDATA[The search order to use for quick searches, searching by thread, and the default value when loading the search form.]]></phrase>
+    <phrase title="default_search_order" version_id="1000000" version_string="1.0.0"><![CDATA[Default Search Order]]></phrase>
+    <phrase title="sv_search_options" version_id="1000000" version_string="1.0.0"><![CDATA[Search Options]]></phrase>
+  </phrases>
   <route_prefixes/>
   <style_properties/>
-  <templates/>
-  <public_template_modifications/>
+  <templates>
+    <template title="sv_search_preferences" version_id="1000000" version_string="1.0.0"><![CDATA[<h3 class="sectionHeader">{xen:phrase sv_search_options}</h3>
+<dl class="ctrlUnit">
+    <dt></dt>
+    <dd>
+        <ul>
+            <li><label for="ctrl_order_default"><input type="radio" name="sv_default_search_order" id="ctrl_order_default" value="" {xen:checked '{$visitor.sv_default_search_order} == ""'} /> {xen:phrase default_search_order}</label></li>
+            <li><label for="ctrl_order_date"><input type="radio" name="sv_default_search_order" id="ctrl_order_date" value="date" {xen:checked '{$visitor.sv_default_search_order} == "date"'} /> {xen:phrase most_recent}</label></li>
+            <li><label for="ctrl_order_relevance"><input type="radio" name="sv_default_search_order" id="ctrl_order_relevance" value="relevance" {xen:checked '{$visitor.sv_default_search_order} == "relevance"'} /> {xen:phrase relevance}</label></li>
+        </ul>
+        <p class="explain">{xen:phrase default_search_options_explain}</p>
+    </dd>
+</dl>]]></template>
+  </templates>
+  <public_template_modifications>
+    <modification template="account_preferences" modification_key="SV_SearchImprovements_account_preferences_1" description="Search Preferences" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<xen:if is="{$xenOptions.enableNotices]]></find>
+      <replace><![CDATA[<xen:include template="sv_search_preferences" />
+$0]]></replace>
+    </modification>
+  </public_template_modifications>
   <bb_code_media_sites/>
   <bb_codes/>
 </addon>

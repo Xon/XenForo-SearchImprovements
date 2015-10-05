@@ -5,6 +5,7 @@
 class SV_SearchImprovements_Globals
 {
     public static $SearchController = null;
+    public static $PublicAccountController = null;
 
     private function __construct() {}
 }
