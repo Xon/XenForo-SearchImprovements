@@ -18,6 +18,11 @@ class SV_SearchImprovements_XenES_Search_SourceHandler_ElasticSearch extends XFC
 
     public function searchHook($indexName, array &$dsl)
     {
+        $this->weightByContentType($dsl);
+    }
+
+    function weightByContentType(array &$dsl)
+    {
         // only support ES > 1.2 & relevance weighting
         if(!isset($dsl['query']['function_score']))
         {
