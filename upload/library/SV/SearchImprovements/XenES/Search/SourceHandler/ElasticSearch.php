@@ -18,7 +18,42 @@ class SV_SearchImprovements_XenES_Search_SourceHandler_ElasticSearch extends XFC
 
     public function searchHook($indexName, array &$dsl)
     {
-        // hook point for arbitary DSL manipulation. not needed yet
+        // only support ES > 1.2 & relevance weighting
+        if(!isset($dsl['query']['function_score']))
+        {
+            return;
+        }
+
+        // pre content type weighting
+        $content_type_weighting = XenForo_Application::getOptions()->content_type_weighting;
+        if (empty($content_type_weighting))
+        {
+            return;
+        }
+
+        $functions = array();
+        foreach($content_type_weighting as $content_type => $weight)
+        {
+            if ($weight == 1)
+            {
+                continue;
+            }
+            $functions[] =  array(
+                    "filter" => array('type' => array('value' => $content_type)),
+                    "weight" => $weight
+            );
+        }
+
+        if (empty($functions))
+        {
+            return;
+        }
+
+        $function_score = $dsl['query']['function_score'];
+        $dsl['query']['function_score'] = array(
+            'query' => array('function_score' => $function_score),
+            "functions" => $functions
+        );
     }
 
     protected function _processConstraint(array &$dsl, $constraintName, array $constraint)
