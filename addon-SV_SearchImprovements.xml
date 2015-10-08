@@ -1,21 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_SearchImprovements" title="Enhanced Search Improvements" version_string="1.0.0a" version_id="1000000" url="" install_callback_class="SV_SearchImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_SearchImprovements_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="SV_SearchImprovements" title="Enhanced Search Improvements" version_string="1.0.0 Alpha2" version_id="1000000" url="" install_callback_class="SV_SearchImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_SearchImprovements_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
-  <admin_templates/>
+  <admin_templates>
+    <template title="sv_search_weighting"><![CDATA[<xen:controlunit label="{$preparedOption.title}">
+<ul class="FieldChoices">
+<xen:foreach loop="$preparedOption.option_value" key="$choice" value="$value">
+<li>
+{$extra.handlers.{$choice}}:
+<xen:spinbox label="" name="{$fieldPrefix}[{$preparedOption.option_id}][{$choice}]" value="{$value}" />
+</li>
+</xen:foreach>
+<li>
+<xen:select label="" name="{$fieldPrefix}[{$preparedOption.option_id}][]" value=""
+hint="{$preparedOption.hint}" inputclass="{$preparedOption.inputClass}">
+	<xen:options source="$formatParams" />
+</xen:select>
+<xen:spinbox label="" name="{$fieldPrefix}[{$preparedOption.option_id}][]" value="1" />
+</li>
+</ul>
+<input type="button" value="{xen:phrase add_additional_choice}" class="button smallButton FieldAdder" data-source="ul.FieldChoices li" />
+
+<p class="explain">{xen:raw $preparedOption.explain}</p>
+{xen:raw $editLink}
+</xen:controlunit>]]></template>
+  </admin_templates>
   <admin_template_modifications/>
   <code_events/>
   <code_event_listeners>
     <listener event_id="load_class" execute_order="11" callback_class="SV_SearchImprovements_Listener" callback_method="load_class" active="1" hint="XenES_Search_SourceHandler_ElasticSearch" description="XenES_Search_SourceHandler_ElasticSearch"/>
-    <listener event_id="load_class_controller" execute_order="11" callback_class="SV_SearchImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ControllerPublic_Search" description="XenForo_ControllerPublic_Search"/>
     <listener event_id="load_class" execute_order="11" callback_class="SV_SearchImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ControllerPublic_Account" description="XenForo_ControllerPublic_Account"/>
     <listener event_id="load_class" execute_order="11" callback_class="SV_SearchImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_DataWriter_User" description="XenForo_DataWriter_User"/>
+    <listener event_id="load_class_controller" execute_order="11" callback_class="SV_SearchImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ControllerPublic_Search" description="XenForo_ControllerPublic_Search"/>
   </code_event_listeners>
   <cron/>
   <email_templates/>
   <email_template_modifications/>
-  <optiongroups/>
+  <optiongroups>
+    <option option_id="content_type_weighting" edit_format="callback" data_type="array" can_backup="1" validation_class="SV_SearchImprovements_Option_ContentTypes" validation_method="verifyOption">
+      <default_value>a:{}</default_value>
+      <edit_format_params>SV_SearchImprovements_Option_ContentTypes::renderOption</edit_format_params>
+      <sub_options>*</sub_options>
+      <relation group_id="searchOptions" display_order="9120"/>
+    </option>
+  </optiongroups>
   <permissions>
     <permission_groups/>
     <permissions/>
@@ -24,6 +53,8 @@
   <phrases>
     <phrase title="default_search_options_explain" version_id="1000000" version_string="1.0.0"><![CDATA[The search order to use for quick searches, searching by thread, and the default value when loading the search form.]]></phrase>
     <phrase title="default_search_order" version_id="1000000" version_string="1.0.0"><![CDATA[Default Search Order]]></phrase>
+    <phrase title="option_content_type_weighting" version_id="1000000" version_string="1.0.0 Alpha2"><![CDATA[Content Type Weighting]]></phrase>
+    <phrase title="option_content_type_weighting_explain" version_id="1000000" version_string="1.0.0 Alpha2"><![CDATA[Per content type search weighting.<br/>Value of '1' removes the weighting option.<br/>Value of 0 will prevent the content type from being searchable with multiple content types.]]></phrase>
     <phrase title="sv_search_options" version_id="1000000" version_string="1.0.0"><![CDATA[Search Options]]></phrase>
   </phrases>
   <route_prefixes/>
