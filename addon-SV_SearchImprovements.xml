@@ -15,7 +15,7 @@
 <li>
 <xen:select label="" name="{$fieldPrefix}[{$preparedOption.option_id}][]" value=""
 hint="{$preparedOption.hint}" inputclass="{$preparedOption.inputClass}">
-	<xen:options source="$formatParams" />
+    <xen:options source="$formatParams" />
 </xen:select>
 <xen:spinbox label="" name="{$fieldPrefix}[{$preparedOption.option_id}][]" value="1" />
 </li>

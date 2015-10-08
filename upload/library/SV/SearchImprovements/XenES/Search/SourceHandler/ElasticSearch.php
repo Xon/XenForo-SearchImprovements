@@ -5,7 +5,7 @@ class SV_SearchImprovements_XenES_Search_SourceHandler_ElasticSearch extends XFC
     public function executeSearch($searchQuery, $titleOnly, array $processedConstraints, array $orderParts,
         $groupByDiscussionType, $maxResults, XenForo_Search_DataHandler_Abstract $typeHandler = null)
     {
-        SV_SearchImprovements_Api::install($this);
+        SV_SearchImprovements_Api::install($this, array('typeHandler' => $typeHandler));
         try
         {
             return parent::executeSearch($searchQuery, $titleOnly, $processedConstraints, $orderParts, $groupByDiscussionType, $maxResults, $typeHandler);
@@ -16,19 +16,22 @@ class SV_SearchImprovements_XenES_Search_SourceHandler_ElasticSearch extends XFC
         }
     }
 
-    public function searchHook($indexName, array &$dsl)
+    public function searchHook($indexName, array &$dsl, $args)
     {
-        $this->weightByContentType($dsl);
+        // skip spesific type handler searches
+        if ($args['typeHandler'] == null)
+        {
+            return;
+        }
+        // only support ES > 1.2 & relevance weighting or plain sorting by relevance score
+        if(isset($dsl['query']['function_score']) || isset($dsl['sort'][0]['_score']))
+        {
+            $this->weightByContentType($dsl);
+        }
     }
 
     function weightByContentType(array &$dsl)
     {
-        // only support ES > 1.2 & relevance weighting
-        if(!isset($dsl['query']['function_score']))
-        {
-            return;
-        }
-
         // pre content type weighting
         $content_type_weighting = XenForo_Application::getOptions()->content_type_weighting;
         if (empty($content_type_weighting))
@@ -54,11 +57,10 @@ class SV_SearchImprovements_XenES_Search_SourceHandler_ElasticSearch extends XFC
             return;
         }
 
-        $function_score = $dsl['query']['function_score'];
-        $dsl['query']['function_score'] = array(
-            'query' => array('function_score' => $function_score),
+        $dsl['query'] = array('function_score' => array(
+            'query' =>  $dsl['query'],
             "functions" => $functions
-        );
+        ));
     }
 
     protected function _processConstraint(array &$dsl, $constraintName, array $constraint)

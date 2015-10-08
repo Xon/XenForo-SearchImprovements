@@ -3,6 +3,7 @@
 class XenES_Api
 {
     public static $hookObject = null;
+    public static $hookArgs = null;
 
 	protected static $_instance = null;
 
@@ -194,7 +195,7 @@ class XenES_Api
 	public static function search($indexName, array $dsl)
 	{
         if (self::$hookObject)
-            self::$hookObject->searchHook($indexName, $dsl);
+            self::$hookObject->searchHook($indexName, $dsl, self::$hookArgs);
 		return self::getInstance()->call(Zend_Http_Client::POST,
 			sprintf('%s/_search', $indexName),
 			json_encode($dsl)
