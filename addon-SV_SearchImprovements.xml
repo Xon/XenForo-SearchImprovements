@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_SearchImprovements" title="Enhanced Search Improvements" version_string="1.0.0 Alpha2" version_id="1000000" url="" install_callback_class="SV_SearchImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_SearchImprovements_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="SV_SearchImprovements" title="Enhanced Search Improvements" version_string="1.0.0" version_id="1000000" url="" install_callback_class="SV_SearchImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_SearchImprovements_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -47,7 +47,9 @@ hint="{$preparedOption.hint}" inputclass="{$preparedOption.inputClass}">
   </optiongroups>
   <permissions>
     <permission_groups/>
-    <permissions/>
+    <permissions>
+      <permission permission_group_id="general" permission_id="sv_searchOptions" permission_type="flag" default_value="unset" interface_group_id="generalPermissions" display_order="101"/>
+    </permissions>
     <interface_groups/>
   </permissions>
   <phrases>
@@ -55,12 +57,14 @@ hint="{$preparedOption.hint}" inputclass="{$preparedOption.inputClass}">
     <phrase title="default_search_order" version_id="1000000" version_string="1.0.0"><![CDATA[Default Search Order]]></phrase>
     <phrase title="option_content_type_weighting" version_id="1000000" version_string="1.0.0 Alpha2"><![CDATA[Content Type Weighting]]></phrase>
     <phrase title="option_content_type_weighting_explain" version_id="1000000" version_string="1.0.0 Alpha2"><![CDATA[Per content type search weighting.<br/>Value of '1' removes the weighting option.<br/>Value of 0 will prevent the content type from being searchable with multiple content types.]]></phrase>
+    <phrase title="permission_general_sv_searchOptions" version_id="1000000" version_string="1.0.0"><![CDATA[Search Options]]></phrase>
     <phrase title="sv_search_options" version_id="1000000" version_string="1.0.0"><![CDATA[Search Options]]></phrase>
   </phrases>
   <route_prefixes/>
   <style_properties/>
   <templates>
-    <template title="sv_search_preferences" version_id="1000000" version_string="1.0.0"><![CDATA[<h3 class="sectionHeader">{xen:phrase sv_search_options}</h3>
+    <template title="sv_search_preferences" version_id="1000000" version_string="1.0.0"><![CDATA[<xen:if is="{$visitor.permissions.general.sv_searchOptions}">
+<h3 class="sectionHeader">{xen:phrase sv_search_options}</h3>
 <dl class="ctrlUnit">
     <dt></dt>
     <dd>
@@ -71,7 +75,8 @@ hint="{$preparedOption.hint}" inputclass="{$preparedOption.inputClass}">
         </ul>
         <p class="explain">{xen:phrase default_search_options_explain}</p>
     </dd>
-</dl>]]></template>
+</dl>
+</xen:if>]]></template>
   </templates>
   <public_template_modifications>
     <modification template="account_preferences" modification_key="SV_SearchImprovements_account_preferences_1" description="Search Preferences" execution_order="10" enabled="1" action="str_replace">
