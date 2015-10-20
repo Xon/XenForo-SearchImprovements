@@ -48,7 +48,7 @@ hint="{$preparedOption.hint}" inputclass="{$preparedOption.inputClass}">
   <permissions>
     <permission_groups/>
     <permissions>
-      <permission permission_group_id="general" permission_id="sv_searchOptions" permission_type="flag" default_value="unset" interface_group_id="generalPermissions" display_order="101"/>
+      <permission permission_group_id="general" permission_id="sv_searchOptions" permission_type="flag" default_value="unset" interface_group_id="generalPermissions" display_order="95"/>
     </permissions>
     <interface_groups/>
   </permissions>
