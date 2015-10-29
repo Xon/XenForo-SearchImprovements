@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_SearchImprovements" title="Enhanced Search Improvements" version_string="1.0.0" version_id="1000000" url="" install_callback_class="SV_SearchImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_SearchImprovements_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="SV_SearchImprovements" title="Enhanced Search Improvements" version_string="1.0.0" version_id="1000001" url="" install_callback_class="SV_SearchImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_SearchImprovements_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -53,17 +53,17 @@ hint="{$preparedOption.hint}" inputclass="{$preparedOption.inputClass}">
     <interface_groups/>
   </permissions>
   <phrases>
-    <phrase title="default_search_options_explain" version_id="1000000" version_string="1.0.0"><![CDATA[The search order to use for quick searches, searching by thread, and the default value when loading the search form.]]></phrase>
-    <phrase title="default_search_order" version_id="1000000" version_string="1.0.0"><![CDATA[Default Search Order]]></phrase>
-    <phrase title="option_content_type_weighting" version_id="1000000" version_string="1.0.0 Alpha2"><![CDATA[Content Type Weighting]]></phrase>
-    <phrase title="option_content_type_weighting_explain" version_id="1000000" version_string="1.0.0 Alpha2"><![CDATA[Per content type search weighting.<br/>Value of '1' removes the weighting option.<br/>Value of 0 will prevent the content type from being searchable with multiple content types.]]></phrase>
-    <phrase title="permission_general_sv_searchOptions" version_id="1000000" version_string="1.0.0"><![CDATA[Search Options]]></phrase>
-    <phrase title="sv_search_options" version_id="1000000" version_string="1.0.0"><![CDATA[Search Options]]></phrase>
+    <phrase title="default_search_options_explain" version_id="1000001" version_string="1.0.0"><![CDATA[The search order to use for quick searches, searching by thread, and the default value when loading the search form.]]></phrase>
+    <phrase title="default_search_order" version_id="1000001" version_string="1.0.0"><![CDATA[Default Search Order]]></phrase>
+    <phrase title="option_content_type_weighting" version_id="1000001" version_string="1.0.0 Alpha2"><![CDATA[Content Type Weighting]]></phrase>
+    <phrase title="option_content_type_weighting_explain" version_id="1000001" version_string="1.0.0 Alpha2"><![CDATA[Per content type search weighting.<br/>Value of '1' removes the weighting option.<br/>Value of 0 will prevent the content type from being searchable with multiple content types.]]></phrase>
+    <phrase title="permission_general_sv_searchOptions" version_id="1000001" version_string="1.0.0"><![CDATA[Search Options]]></phrase>
+    <phrase title="sv_search_options" version_id="1000001" version_string="1.0.0"><![CDATA[Search Options]]></phrase>
   </phrases>
   <route_prefixes/>
   <style_properties/>
   <templates>
-    <template title="sv_search_preferences" version_id="1000000" version_string="1.0.0"><![CDATA[<xen:if is="{$visitor.permissions.general.sv_searchOptions}">
+    <template title="sv_search_preferences" version_id="1000001" version_string="1.0.0"><![CDATA[<xen:if is="{$visitor.permissions.general.sv_searchOptions}">
 <h3 class="sectionHeader">{xen:phrase sv_search_options}</h3>
 <dl class="ctrlUnit">
     <dt></dt>
