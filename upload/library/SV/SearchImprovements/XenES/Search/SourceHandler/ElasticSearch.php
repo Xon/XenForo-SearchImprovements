@@ -72,27 +72,31 @@ class SV_SearchImprovements_XenES_Search_SourceHandler_ElasticSearch extends XFC
         return parent::_processConstraint($dsl, $constraintName, $constraint);
     }
 
+    protected function _extractRangeOperatorPart(array $constraint, $index, array &$params)
+    {
+        if (empty($constraint[$index]))
+        {
+            return;
+        }
+        $rangePart = $constraint[$index];
+        if (isset($rangePart[0]) && isset($rangePart[1]))
+        {
+            $params[$this->_getRangeOperator($rangePart[0])] = $rangePart[1];
+        }
+    }
+
     protected function _processRangeQueryConstraint(array &$dsl, $constraintName, array $constraint)
     {
         $params = array();
 
-        if (empty($constraint[0]))
+        if (empty($constraint) || empty($constraint[0]))
         {
             return false;
         }
         $field = $constraint[0];
 
-        if (isset($constraint[1]) && isset($constraint[1][0]) && isset($constraint[1][1]))
-        {
-            $arg = $constraint[1];
-            $params[$this->_getRangeOperator($arg[0])] = $arg[1];
-        }
-
-        if (isset($constraint[2]) && isset($constraint[2][0]) && isset($constraint[2][1]))
-        {
-            $arg = $constraint[1];
-            $params[$this->_getRangeOperator($arg[0])] = $arg[1];
-        }
+        $this->_extractRangeOperatorPart($constraint, 1, $params);
+        $this->_extractRangeOperatorPart($constraint, 2, $params);
 
         if (empty($params))
         {
