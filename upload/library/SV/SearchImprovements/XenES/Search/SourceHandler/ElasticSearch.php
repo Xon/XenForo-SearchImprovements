@@ -19,7 +19,7 @@ class SV_SearchImprovements_XenES_Search_SourceHandler_ElasticSearch extends XFC
     public function searchHook($indexName, array &$dsl, $args)
     {
         // skip spesific type handler searches
-        if ($args['typeHandler'] == null)
+        if (!empty($args['typeHandler']))
         {
             return;
         }
