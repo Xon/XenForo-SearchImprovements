@@ -1,9 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_SearchImprovements" title="Enhanced Search Improvements" version_string="1.0.3" version_id="1000300" url="https://xenforo.com/community/resources/enhanced-search-improvements.4762/" install_callback_class="SV_SearchImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_SearchImprovements_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="SV_SearchImprovements" title="Enhanced Search Improvements" version_string="1.1.0" version_id="1010000" url="https://xenforo.com/community/resources/enhanced-search-improvements.4762/" install_callback_class="SV_SearchImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_SearchImprovements_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
   <admin_templates>
+    <template title="sv_elasticsearch_info"><![CDATA[<style>
+#ESVer dl
+{
+	line-height: 1.9;
+	font-size: 11px;
+}
+</style>
+
+<div class="section" id="ESVer">
+	<div class="secondaryContent statsList">
+		<h3 class="textHeading">{xen:phrase elastic_search_version}</h3>
+		<div class="pairsJustified">
+			<dl>
+				<span class="label"><dt>{xen:phrase es_version}:</dt></span>
+				<dd>{$esVersion}</dd>
+			</dl>
+			<xen:if is="{$esStats}">
+				<dl><dt>{xen:phrase es_documents}:</dt> <dd>{xen:number $esStats.docs.count} ({xen:number $esStats.store.size_in_bytes, size})</dd></dl>
+				<dl><dt>{xen:phrase es_index_updates}:</dt> <dd>{xen:number $esStats.indexing.index_total} <xen:if is="{$esStats.indexing.index_total}">({xen:phrase x_seconds_average, "time={xen:number {xen:calc '{$esStats.indexing.index_time_in_millis} / {$esStats.indexing.index_total} / 1000'}, 4}"})</xen:if></dd></dl>
+				<dl><dt>{xen:phrase es_searches}:</dt> <dd>{xen:number $esStats.search.query_total} <xen:if is="{$esStats.search.query_total}">({xen:phrase x_seconds_average, "time={xen:number {xen:calc '{$esStats.search.query_time_in_millis} / {$esStats.search.query_total} / 1000'}, 4}"})</xen:if></dd></dl>
+				<dl><dt>{xen:phrase es_fetches}:</dt> <dd>{xen:number $esStats.search.fetch_total} <xen:if is="{$esStats.search.fetch_total}">({xen:phrase x_seconds_average, "time={xen:number {xen:calc '{$esStats.search.fetch_time_in_millis} / {$esStats.search.fetch_total} / 1000'}, 4}"})</xen:if></dd></dl>
+			</xen:if>
+		</div>
+	</div>
+</div>]]></template>
     <template title="sv_search_weighting"><![CDATA[<xen:controlunit label="{$preparedOption.title}">
 <ul class="FieldChoices">
 <xen:foreach loop="$preparedOption.option_value" key="$choice" value="$value">
@@ -26,12 +51,20 @@ hint="{$preparedOption.hint}" inputclass="{$preparedOption.inputClass}">
 {xen:raw $editLink}
 </xen:controlunit>]]></template>
   </admin_templates>
-  <admin_template_modifications/>
+  <admin_template_modifications>
+    <modification template="home" modification_key="SV_SearchImprovements_home1" description="Add ElasticSearch Info" execution_order="5000" enabled="1" action="preg_replace">
+      <find><![CDATA[#(<div class="sidebar">.*<!-- slot: pre_add_ons -->.*?)(\s*<xen:if is="{\$canManageAddOns}">)#si]]></find>
+      <replace><![CDATA[$1
+<xen:include template="sv_elasticsearch_info"/>
+$2]]></replace>
+    </modification>
+  </admin_template_modifications>
   <code_events/>
   <code_event_listeners>
     <listener event_id="load_class" execute_order="11" callback_class="SV_SearchImprovements_Listener" callback_method="load_class" active="1" hint="XenES_Search_SourceHandler_ElasticSearch" description="XenES_Search_SourceHandler_ElasticSearch"/>
     <listener event_id="load_class" execute_order="11" callback_class="SV_SearchImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ControllerPublic_Account" description="XenForo_ControllerPublic_Account"/>
     <listener event_id="load_class" execute_order="11" callback_class="SV_SearchImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_DataWriter_User" description="XenForo_DataWriter_User"/>
+    <listener event_id="load_class" execute_order="4762" callback_class="SV_SearchImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ControllerAdmin_Home" description="XenForo_ControllerAdmin_Home"/>
     <listener event_id="load_class_controller" execute_order="11" callback_class="SV_SearchImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ControllerPublic_Search" description="XenForo_ControllerPublic_Search"/>
   </code_event_listeners>
   <cron/>
@@ -59,6 +92,7 @@ hint="{$preparedOption.hint}" inputclass="{$preparedOption.inputClass}">
     <phrase title="option_content_type_weighting_explain" version_id="1000001" version_string="1.0.0 Alpha2"><![CDATA[Per content type search weighting.<br/>Value of '1' removes the weighting option.<br/>Value of 0 will prevent the content type from being searchable with multiple content types.]]></phrase>
     <phrase title="permission_general_sv_searchOptions" version_id="1000001" version_string="1.0.0"><![CDATA[Search Options]]></phrase>
     <phrase title="sv_search_options" version_id="1000001" version_string="1.0.0"><![CDATA[Search Options]]></phrase>
+    <phrase title="elastic_search_version" version_id="1010000" version_string="1.1.0"><![CDATA[Elastic Search Information]]></phrase>
   </phrases>
   <route_prefixes/>
   <style_properties/>

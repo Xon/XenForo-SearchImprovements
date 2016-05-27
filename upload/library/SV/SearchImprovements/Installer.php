@@ -20,6 +20,7 @@ class SV_SearchImprovements_Installer
             (?, 0, 'general', 'sv_searchOptions', 'allow', '0')
         ", array(XenForo_Model_User::$defaultRegisteredGroupId));
 
+        SV_Utils_Install::removeOldAddons(array('SV_ElasticSearchInfo' => array()));
     }
 
     public static function uninstall()

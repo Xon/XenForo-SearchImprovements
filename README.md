@@ -6,4 +6,5 @@ A Collection of improvements to XF's Enhanced Search (Elastic Search). Does NOT 
  - allows arbitrary range queries for numerical data
 - Allow users to select the default search order independent for the forum wide setting.
 - Per content type weighting
+- Adds Elastic Search information to the AdminCP home screen.
 
