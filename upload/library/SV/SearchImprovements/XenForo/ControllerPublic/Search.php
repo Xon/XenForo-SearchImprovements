@@ -2,6 +2,11 @@
 
 class SV_SearchImprovements_XenForo_ControllerPublic_Search extends XFCP_SV_SearchImprovements_XenForo_ControllerPublic_Search
 {
+    protected function _preDispatchFirst($action)
+    {
+        SV_SearchImprovements_Api::install(null, null);
+    }
+
     public function actionIndex()
     {
         SV_SearchImprovements_Globals::$SearchController = $this;
