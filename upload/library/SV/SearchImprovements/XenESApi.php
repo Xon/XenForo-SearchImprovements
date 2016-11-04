@@ -11,6 +11,8 @@ class XenES_Api
 
 	protected $_indexName = '';
 
+	protected static $_version;
+
 	/**
 	 * @var Zend_Http_Client
 	 */
@@ -54,6 +56,7 @@ class XenES_Api
 		if (self::$_instance === null)
 		{
 			self::$_instance = new self();
+			self::$_version = null;
 		}
 
 		return self::$_instance;
@@ -204,15 +207,22 @@ class XenES_Api
 
 	public static function version()
 	{
+		if (self::$_version !== null)
+		{
+			return self::$_version;
+		}
+
 		$result = self::getInstance()->call(Zend_Http_Client::GET, '/');
 		if ($result && !empty($result->version->number))
 		{
-			return $result->version->number;
+			$version = $result->version->number;
 		}
 		else
 		{
-			return false;
+			$version = false;
 		}
+		self::$_version = $version;
+		return $version;
 	}
 
 	/**
@@ -280,7 +290,7 @@ class XenES_Api
 	 * @param string $indexName
 	 * @param string $type
 	 * @param array $dsl
-	 * @param bool $ignoreConflicts
+	 * @param bool $ignoreConflicts Deprecated and ignored
 	 *
 	 * @return array
 	 */
@@ -292,7 +302,7 @@ class XenES_Api
 		}
 
 		return self::getInstance()->call(Zend_Http_Client::PUT,
-			sprintf('%s/%s/_mapping%s', $indexName, $type, $ignoreConflicts ? '?ignore_conflicts=true' : ''),
+			sprintf('%s/%s/_mapping', $indexName, $type),
 			json_encode($dsl)
 		);
 	}
@@ -309,7 +319,7 @@ class XenES_Api
 	{
 		return self::getInstance()->call(Zend_Http_Client::PUT,
 			sprintf('%s/', $indexName),
-			json_encode($dsl)
+			$dsl ? json_encode($dsl) : null
 		);
 	}
 
