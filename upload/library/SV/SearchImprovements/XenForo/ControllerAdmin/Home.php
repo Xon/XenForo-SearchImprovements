@@ -6,7 +6,7 @@ class SV_SearchImprovements_XenForo_ControllerAdmin_Home extends XFCP_SV_SearchI
     {
         $response = parent::actionIndex();
 
-        if ($response instanceof XenForo_ControllerResponse_View)
+        if ($response instanceof XenForo_ControllerResponse_View && !class_exists('DigitalPointSearch_ControllerAdmin_Elasticsearch', false))
         {
             $esModel = $this->_getEsModel();
             if ($esModel)

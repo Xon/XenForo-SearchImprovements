@@ -4,7 +4,7 @@
   <admin_permissions/>
   <admin_style_properties/>
   <admin_templates>
-    <template title="sv_elasticsearch_info"><![CDATA[<style>
+    <template title="sv_elasticsearch_info"><![CDATA[<xen:if is="{$esVersion}"><style>
 #ESVer dl
 {
 	line-height: 1.9;
@@ -28,7 +28,8 @@
 			</xen:if>
 		</div>
 	</div>
-</div>]]></template>
+</div>
+</xen:if>]]></template>
     <template title="sv_search_weighting"><![CDATA[<xen:controlunit label="{$preparedOption.title}">
 <ul class="FieldChoices">
 <xen:foreach loop="$preparedOption.option_value" key="$choice" value="$value">
