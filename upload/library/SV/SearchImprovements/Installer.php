@@ -23,6 +23,27 @@ class SV_SearchImprovements_Installer
             ", array(XenForo_Model_User::$defaultRegisteredGroupId));
         }
 
+        if (SV_Utils_AddOn::addOnIsActive('dpSearch') && $xml)
+        {
+            // disable AdminCP home extension which conflicts with Digitalpoint search
+            $xmlListeners = XenForo_Helper_DevelopmentXml::fixPhpBug50670($xml->code_event_listeners->listener);
+            foreach ($xmlListeners AS $event)
+            {
+                if ((string)$event['hint'] == 'XenForo_ControllerAdmin_Home')
+                {
+                    $event['active'] = 0;
+                }
+            }
+            $xmlAdminModifications = XenForo_Helper_DevelopmentXml::fixPhpBug50670($xml->admin_template_modifications->modification);
+            foreach ($xmlAdminModifications AS $adminMod)
+            {
+                if ((string)$adminMod['modification_key'] == 'SV_SearchImprovements_home1')
+                {
+                    $event['enabled'] = 0;
+                }
+            }
+        }
+
         SV_Utils_Install::removeOldAddons(array('SV_ElasticSearchInfo' => array()));
     }
 
