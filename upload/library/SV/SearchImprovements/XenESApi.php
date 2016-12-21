@@ -197,8 +197,10 @@ class XenES_Api
 	 */
 	public static function search($indexName, array $dsl)
 	{
-        if (self::$hookObject)
-            self::$hookObject->searchHook($indexName, $dsl, self::$hookArgs);
+		if (self::$hookObject)
+			self::$hookObject->searchHook($indexName, $dsl, self::$hookArgs);
+		if (XenForo_Application::getOptions()->esLogDSL)
+			XenForo_Error::debug(json_encode($dsl));
 		return self::getInstance()->call(Zend_Http_Client::POST,
 			sprintf('%s/_search', $indexName),
 			json_encode($dsl)

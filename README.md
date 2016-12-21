@@ -7,4 +7,4 @@ A Collection of improvements to XF's Enhanced Search (Elastic Search). Does NOT 
 - Allow users to select the default search order independent for the forum wide setting.
 - Per content type weighting
 - Adds Elastic Search information to the AdminCP home screen.
-
+- Adds a debug option to log the search DSL queries to error log for troubleshooting
