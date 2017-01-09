@@ -6,14 +6,9 @@ class SV_SearchImprovements_XenES_Search_SourceHandler_ElasticSearch extends XFC
         $groupByDiscussionType, $maxResults, XenForo_Search_DataHandler_Abstract $typeHandler = null)
     {
         SV_SearchImprovements_Api::install($this, array('typeHandler' => $typeHandler));
-        try
-        {
-            return parent::executeSearch($searchQuery, $titleOnly, $processedConstraints, $orderParts, $groupByDiscussionType, $maxResults, $typeHandler);
-        }
-        finally
-        {
-            SV_SearchImprovements_Api::uninstall();
-        }
+        $result = parent::executeSearch($searchQuery, $titleOnly, $processedConstraints, $orderParts, $groupByDiscussionType, $maxResults, $typeHandler);
+        SV_SearchImprovements_Api::uninstall();
+        return $result;
     }
 
     public function searchHook($indexName, array &$dsl, $args)
