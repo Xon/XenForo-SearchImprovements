@@ -198,13 +198,32 @@ class XenES_Api
 	public static function search($indexName, array $dsl)
 	{
 		if (self::$hookObject)
+		{
 			self::$hookObject->searchHook($indexName, $dsl, self::$hookArgs);
-		if (XenForo_Application::getOptions()->esLogDSL)
-			XenForo_Error::debug(json_encode($dsl));
-		return self::getInstance()->call(Zend_Http_Client::POST,
+		}
+		$options = XenForo_Application::getOptions();
+		$json = json_encode($dsl);
+		if ($options->esLogDSL)
+		{
+			XenForo_Error::debug($json);
+		}
+		$response = self::getInstance()->call(Zend_Http_Client::POST,
 			sprintf('%s/_search', $indexName),
-			json_encode($dsl)
+			$json
 		);
+
+		if ($options->esLogDSLOnError && $response && !empty($response->error))
+		{
+			if (is_string($response->error))
+			{
+				$response->error = $response->error . "\n DSL:" . $json;
+			}
+			else
+			{
+				$response->error = json_encode($response->error) . "\n DSL:" . $json;
+			}
+		}
+		return $response;
 	}
 
 	public static function version()
