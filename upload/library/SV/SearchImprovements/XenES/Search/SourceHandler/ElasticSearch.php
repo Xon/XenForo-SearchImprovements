@@ -11,17 +11,62 @@ class SV_SearchImprovements_XenES_Search_SourceHandler_ElasticSearch extends XFC
         return $result;
     }
 
+    public function parseQuery($query)
+    {
+        $options = XenForo_Application::getOptions();
+        if ($options->searchImpov_simpleQuerySyntax)
+        {
+            return $query;
+        }
+        return parent::parseQuery($query);
+    }
+
     public function searchHook($indexName, array &$dsl, $args)
     {
+        $options = XenForo_Application::getOptions();
+        if ($options->searchImpov_simpleQuerySyntax)
+        {
+            // use simple_query_string instead of an escaped query_string
+            $this->rewriteSimpleQueryString($dsl);
+        }
         // skip spesific type handler searches
         if (!empty($args['typeHandler']))
         {
             return;
         }
         // only support ES > 1.2 & relevance weighting or plain sorting by relevance score
-        if(isset($dsl['query']['function_score']) || isset($dsl['sort'][0]['_score']))
+        if (isset($dsl['query']['function_score']) || isset($dsl['sort'][0]['_score']))
         {
             $this->weightByContentType($dsl);
+        }
+    }
+
+    function rewriteSimpleQueryString(array &$dsl)
+    {
+        if (isset($dsl['query']['query_string']))
+        {
+            $dsl['query']['simple_query_string'] = $dsl['query']['query_string'];
+            unset($dsl['query']['query_string']);
+        }
+        else if (isset($dsl['query']['function_score']['query']['query_string']))
+        {
+            $dsl['query']['function_score']['query']['simple_query_string'] = $dsl['query']['function_score']['query']['query_string'];
+            unset($dsl['query']['function_score']['query']['query_string']);
+        }
+        else if (isset($dsl['query']['filtered']['query']['query_string']))
+        {
+            $dsl['query']['filtered']['query']['simple_query_string'] = $dsl['query']['filtered']['query']['query_string'];
+            unset($dsl['query']['filtered']['query']['query_string']);
+        }
+        else if (isset($dsl['query']['bool']['must']['query_string']))
+        {
+            $dsl['query']['bool']['must']['simple_query_string'] = $dsl['query']['bool']['must']['query_string'];
+            unset($dsl['query']['bool']['must']['query_string']);
+        }
+        else if (isset($dsl['query']['custom_score']['query']['query_string']))
+        {
+            $dsl['query']['custom_score']['query']['simple_query_string'] = $dsl['query']['custom_score']['query']['query_string'];
+            unset($dsl['query']['custom_score']['query']['query_string']);
         }
     }
 

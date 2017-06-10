@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_SearchImprovements" title="Enhanced Search Improvements" version_string="1.1.5" version_id="1010500" url="https://xenforo.com/community/resources/enhanced-search-improvements.4762/" install_callback_class="SV_SearchImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_SearchImprovements_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="SV_SearchImprovements" title="Enhanced Search Improvements" version_string="1.2.0" version_id="1020000" url="https://xenforo.com/community/resources/enhanced-search-improvements.4762/" install_callback_class="SV_SearchImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_SearchImprovements_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -76,19 +76,25 @@ $2]]></replace>
       <default_value>a:0:{}</default_value>
       <edit_format_params>SV_SearchImprovements_Option_ContentTypes::renderOption</edit_format_params>
       <sub_options>*</sub_options>
-      <relation group_id="searchOptions" display_order="9120"/>
+      <relation group_id="searchOptions" display_order="9150"/>
     </option>
     <option option_id="esLogDSL" edit_format="onoff" data_type="boolean" can_backup="1">
       <default_value></default_value>
       <edit_format_params></edit_format_params>
       <sub_options></sub_options>
-      <relation group_id="searchOptions" display_order="9110"/>
+      <relation group_id="searchOptions" display_order="9210"/>
     </option>
     <option option_id="esLogDSLOnError" edit_format="onoff" data_type="boolean" can_backup="1">
       <default_value>1</default_value>
       <edit_format_params></edit_format_params>
       <sub_options></sub_options>
-      <relation group_id="searchOptions" display_order="9115"/>
+      <relation group_id="searchOptions" display_order="9220"/>
+    </option>
+    <option option_id="searchImpov_simpleQuerySyntax" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="searchOptions" display_order="9110"/>
     </option>
   </optiongroups>
   <permissions>
@@ -108,6 +114,8 @@ $2]]></replace>
     <phrase title="option_esLogDSLOnError" version_id="1010500" version_string="1.1.5"><![CDATA[On Error, Log Search DSL]]></phrase>
     <phrase title="option_esLogDSLOnError_explain" version_id="1010500" version_string="1.1.5"><![CDATA[Option to log Search DSL when an elastic search error occurs for troubleshooting]]></phrase>
     <phrase title="option_esLogDSL_explain" version_id="1010300" version_string="1.1.3"><![CDATA[Option to log Search DSL for troubleshooting]]></phrase>
+    <phrase title="option_searchImpov_simpleQuerySyntax" version_id="1020000" version_string="1.2.0"><![CDATA[Enhanced Search Syntax]]></phrase>
+    <phrase title="option_searchImpov_simpleQuerySyntax_explain" version_id="1020000" version_string="1.2.0"><![CDATA[Enable the use of <a href="https://www.elastic.co/guide/en/elasticsearch/reference/5.4/query-dsl-simple-query-string-query.html">simple query syntax</a> instead of highly simplified escaped.]]></phrase>
     <phrase title="permission_general_sv_searchOptions" version_id="1000001" version_string="1.0.0"><![CDATA[Search Options]]></phrase>
     <phrase title="sv_search_options" version_id="1000001" version_string="1.0.0"><![CDATA[Search Options]]></phrase>
   </phrases>
