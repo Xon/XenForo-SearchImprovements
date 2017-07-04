@@ -17,3 +17,4 @@ A Collection of improvements to XF's Enhanced Search (Elastic Search). Does NOT 
  - ( and ) signify precedence
  - ~N after a word signifies edit distance (fuzziness)
  - ~N after a phrase signifies slop amount
+ - In order to search for any of these special characters, they will need to be escaped with \.
