@@ -5,7 +5,16 @@ class SV_SearchImprovements_Installer
     public static function install($installedAddon, array $addonData, SimpleXMLElement $xml)
     {
         $version = isset($installedAddon['version_id']) ? $installedAddon['version_id'] : 0;
-
+        $required = '5.4.0';
+        $phpversion = phpversion();
+        if (version_compare($phpversion, $required, '<'))
+        {
+            throw new XenForo_Exception("PHP {$required} or newer is required. {$phpversion} does not meet this requirement. Please ask your host to upgrade PHP", true);
+        }
+        if (XenForo_Application::$versionId < 1030070)
+        {
+            throw new XenForo_Exception('XenForo 1.3.0+ is Required!', true); // Make this show nicely.
+        }
         if (!(XenForo_Application::get('options')->enableElasticsearch) || !($XenEs = XenForo_Model::create('XenES_Model_Elasticsearch')))
         {
             throw new Exception("Require Enhanced Search to be installed and enabled");
