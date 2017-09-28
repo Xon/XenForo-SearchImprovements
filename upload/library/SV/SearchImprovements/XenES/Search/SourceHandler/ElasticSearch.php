@@ -85,6 +85,7 @@ class SV_SearchImprovements_XenES_Search_SourceHandler_ElasticSearch extends XFC
         }
 
         $functions = [];
+        $isSingleTypeIndex = XenES_Api::isSingleTypeIndex();
         foreach ($content_type_weighting as $content_type => $weight)
         {
             if ($weight == 1)
@@ -92,7 +93,7 @@ class SV_SearchImprovements_XenES_Search_SourceHandler_ElasticSearch extends XFC
                 continue;
             }
             $functions[] = [
-                "filter" => ['type' => ['value' => $content_type]],
+                "filter" => $isSingleTypeIndex ? ['term' => ['type' => $content_type]] : ['type' => ['value' => $content_type]],
                 "weight" => $weight
             ];
         }
