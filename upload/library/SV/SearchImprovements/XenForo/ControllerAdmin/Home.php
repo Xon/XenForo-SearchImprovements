@@ -6,7 +6,9 @@ class SV_SearchImprovements_XenForo_ControllerAdmin_Home extends XFCP_SV_SearchI
     {
         $response = parent::actionIndex();
 
-        if ($response instanceof XenForo_ControllerResponse_View && !class_exists('DigitalPointSearch_ControllerAdmin_Elasticsearch', false))
+        if ($response instanceof XenForo_ControllerResponse_View && !class_exists(
+                'DigitalPointSearch_ControllerAdmin_Elasticsearch', false
+            ))
         {
             $esModel = $this->_getEsModel();
             if ($esModel)
@@ -24,18 +26,16 @@ class SV_SearchImprovements_XenForo_ControllerAdmin_Home extends XFCP_SV_SearchI
         return $response;
     }
 
-    var $_elasticsearch = null;
-
+    /**
+     * @return null|XenForo_Model|XenES_Model_Elasticsearch
+     */
     protected function _getEsModel()
     {
-        if ($this->_elasticsearch === null)
+        if (!XenForo_Application::get('options')->enableElasticsearch)
         {
-            $this->_elasticsearch = false;
-            if (XenForo_Application::get('options')->enableElasticsearch && $XenEs = XenForo_Model::create('XenES_Model_Elasticsearch'))
-            {
-                $this->_elasticsearch = $XenEs;
-            }
+            return null;
         }
-        return $this->_elasticsearch;
+
+        return $this->getModelFromCache('XenES_Model_Elasticsearch');
     }
 }

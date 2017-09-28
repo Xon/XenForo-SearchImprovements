@@ -3,11 +3,15 @@
 class SV_SearchImprovements_XenES_Search_SourceHandler_ElasticSearch extends XFCP_SV_SearchImprovements_XenES_Search_SourceHandler_ElasticSearch
 {
     public function executeSearch($searchQuery, $titleOnly, array $processedConstraints, array $orderParts,
-        $groupByDiscussionType, $maxResults, XenForo_Search_DataHandler_Abstract $typeHandler = null)
+                                  $groupByDiscussionType, $maxResults, XenForo_Search_DataHandler_Abstract $typeHandler = null)
     {
-        SV_SearchImprovements_Api::install($this, array('typeHandler' => $typeHandler));
-        $result = parent::executeSearch($searchQuery, $titleOnly, $processedConstraints, $orderParts, $groupByDiscussionType, $maxResults, $typeHandler);
+        SV_SearchImprovements_Api::install($this, ['typeHandler' => $typeHandler]);
+        $result = parent::executeSearch(
+            $searchQuery, $titleOnly, $processedConstraints, $orderParts, $groupByDiscussionType, $maxResults,
+            $typeHandler
+        );
         SV_SearchImprovements_Api::uninstall();
+
         return $result;
     }
 
@@ -18,6 +22,7 @@ class SV_SearchImprovements_XenES_Search_SourceHandler_ElasticSearch extends XFC
         {
             return $query;
         }
+
         return parent::parseQuery($query);
     }
 
@@ -79,17 +84,17 @@ class SV_SearchImprovements_XenES_Search_SourceHandler_ElasticSearch extends XFC
             return;
         }
 
-        $functions = array();
-        foreach($content_type_weighting as $content_type => $weight)
+        $functions = [];
+        foreach ($content_type_weighting as $content_type => $weight)
         {
             if ($weight == 1)
             {
                 continue;
             }
-            $functions[] =  array(
-                    "filter" => array('type' => array('value' => $content_type)),
-                    "weight" => $weight
-            );
+            $functions[] = [
+                "filter" => ['type' => ['value' => $content_type]],
+                "weight" => $weight
+            ];
         }
 
         if (empty($functions))
@@ -97,10 +102,12 @@ class SV_SearchImprovements_XenES_Search_SourceHandler_ElasticSearch extends XFC
             return;
         }
 
-        $dsl['query'] = array('function_score' => array(
-            'query' =>  $dsl['query'],
-            "functions" => $functions
-        ));
+        $dsl['query'] = [
+            'function_score' => [
+                'query' => $dsl['query'],
+                "functions" => $functions
+            ]
+        ];
     }
 
     protected function _processConstraint(array &$dsl, $constraintName, array $constraint)
@@ -109,6 +116,7 @@ class SV_SearchImprovements_XenES_Search_SourceHandler_ElasticSearch extends XFC
         {
             return $this->_processRangeQueryConstraint($dsl, $constraintName, $constraint['range_query']);
         }
+
         return parent::_processConstraint($dsl, $constraintName, $constraint);
     }
 
@@ -127,7 +135,7 @@ class SV_SearchImprovements_XenES_Search_SourceHandler_ElasticSearch extends XFC
 
     protected function _processRangeQueryConstraint(array &$dsl, $constraintName, array $constraint)
     {
-        $params = array();
+        $params = [];
 
         if (empty($constraint) || empty($constraint[0]))
         {
@@ -144,6 +152,7 @@ class SV_SearchImprovements_XenES_Search_SourceHandler_ElasticSearch extends XFC
         }
 
         $dsl['query']['filtered']['filter']['and'][]['range'][$field] = $params;
+
         return true;
     }
 }

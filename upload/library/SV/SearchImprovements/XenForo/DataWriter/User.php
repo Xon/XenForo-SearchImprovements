@@ -5,7 +5,11 @@ class SV_SearchImprovements_XenForo_DataWriter_User extends XFCP_SV_SearchImprov
     protected function _getFields()
     {
         $fields = parent::_getFields();
-        $fields['xf_user_option']['sv_default_search_order'] = array('type' => self::TYPE_STRING, 'maxLength' => 50, 'default' => '');
+        $fields['xf_user_option']['sv_default_search_order'] = [
+            'type'    => self::TYPE_STRING, 'maxLength' => 50,
+            'default' => ''
+        ];
+
         return $fields;
     }
 

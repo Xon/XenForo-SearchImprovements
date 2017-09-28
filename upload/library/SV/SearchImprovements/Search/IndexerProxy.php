@@ -3,11 +3,11 @@
 class SV_SearchImprovements_Search_IndexerProxy extends XenForo_Search_Indexer
 {
     protected $_proxiedIndexer = null;
-    protected $_metadata = array();
+    protected $_metadata       = [];
 
     public function __construct(XenForo_Search_Indexer $otherIndexer, array $metadata)
     {
-        $this->_sourceHandler = $otherIndexer->_sourceHandler;
+        parent::__construct($otherIndexer->_sourceHandler);
         $this->_proxiedIndexer = $otherIndexer;
         $this->_metadata = $metadata;
     }
@@ -19,12 +19,14 @@ class SV_SearchImprovements_Search_IndexerProxy extends XenForo_Search_Indexer
 
     public function clearProxyMetaData(array $metadata)
     {
-        $this->_metadata = array();
+        $this->_metadata = [];
     }
 
-    public function insertIntoIndex($contentType, $contentId, $title, $message, $itemDate, $userId, $discussionId = 0, array $metadata = array())
+    public function insertIntoIndex($contentType, $contentId, $title, $message, $itemDate, $userId, $discussionId = 0, array $metadata = [])
     {
         $metadata = XenForo_Application::mapMerge($metadata, $this->_metadata);
-        $this->_proxiedIndexer->insertIntoIndex($contentType, $contentId, $title, $message, $itemDate, $userId, $discussionId, $metadata);
+        $this->_proxiedIndexer->insertIntoIndex(
+            $contentType, $contentId, $title, $message, $itemDate, $userId, $discussionId, $metadata
+        );
     }
 }
