@@ -11,6 +11,9 @@ class XenES_Api
 
 	protected $_indexName = '';
 
+	protected static $_isSingleType = null;
+	protected static $_singleTypeName = 'xf';
+
 	protected static $_version;
 
 	/**
@@ -95,8 +98,10 @@ class XenES_Api
 	 */
 	public static function index($indexName, $contentType, $contentId, array $contentData)
 	{
+		self::addTypeToDataForSingleTypeIndex($contentType, $contentData);
+
 		return self::getInstance()->call(Zend_Http_Client::PUT,
-			sprintf('%s/%s/%s', $indexName, $contentType, $contentId),
+			self::getIdUrl($indexName, $contentType, $contentId),
 			json_encode($contentData)
 		);
 	}
@@ -116,11 +121,7 @@ class XenES_Api
 
 		foreach ($contentData AS $contentId => $content)
 		{
-			$items[] = json_encode(array('index' => array(
-				'_index' => $indexName,
-				'_type' => $contentType,
-				'_id' => $contentId
-			))) . "\n" . json_encode($content);
+			$items[] = self::getBulkActionEntry('index', $indexName, $contentType, $contentId, $content);
 		}
 
 		return self::getInstance()->call(Zend_Http_Client::POST,
@@ -141,7 +142,7 @@ class XenES_Api
 	public static function get($indexName, $contentType, $contentId)
 	{
 		return self::getInstance()->call(Zend_Http_Client::GET,
-			sprintf('%s/%s/%s', $indexName, $contentType, $contentId)
+			self::getIdUrl($indexName, $contentType, $contentId)
 		);
 	}
 
@@ -157,7 +158,7 @@ class XenES_Api
 	public static function delete($indexName, $contentType, $contentId)
 	{
 		return self::getInstance()->call(Zend_Http_Client::DELETE,
-			sprintf('%s/%s/%s', $indexName, $contentType, $contentId)
+			self::getIdUrl($indexName, $contentType, $contentId)
 		);
 	}
 
@@ -167,6 +168,8 @@ class XenES_Api
 	 * @param string $indexName
 	 * @param string $contentType
 	 * @param array $contentIds
+	 *
+	 * @return array
 	 */
 	public static function deleteBulk($indexName, $contentType, $contentIds)
 	{
@@ -174,11 +177,7 @@ class XenES_Api
 
 		foreach ($contentIds AS $contentId)
 		{
-			$deletes[] = json_encode(array('delete' => array(
-				'_index' => $indexName,
-				'_type' => $contentType,
-				'_id' => $contentId
-			)));
+			$deletes[] = self::getBulkActionEntry('delete', $indexName, $contentType, $contentId);
 		}
 
 		return self::getInstance()->call(Zend_Http_Client::POST,
@@ -242,6 +241,7 @@ class XenES_Api
 		{
 			$version = false;
 		}
+
 		self::$_version = $version;
 		return $version;
 	}
@@ -356,9 +356,8 @@ class XenES_Api
 	{
 		if ($type)
 		{
-			return self::getInstance()->call(Zend_Http_Client::DELETE,
-				sprintf('%s/%s', $indexName, $type)
-			);
+			// can't delete a single type
+			return null;
 		}
 		else
 		{
@@ -399,6 +398,110 @@ class XenES_Api
 	}
 
 	/**
+	 * Returns true if the current version of Elasticsearch only supports a single type per index.
+	 * This may apply in Elasticsearch 6+.
+	 *
+	 * @return bool
+	 */
+	public static function isSingleTypeIndex()
+	{
+		if (self::$_isSingleType === null)
+		{
+			self::$_isSingleType = XenForo_Application::getOptions()->elasticSearchSingleType;
+		}
+
+		return self::$_isSingleType;
+	}
+
+	public static function forceSingleTypeIndex()
+	{
+		self::$_isSingleType = true;
+	}
+
+	public static function getSingleTypeName()
+	{
+		return self::$_singleTypeName;
+	}
+
+	protected static function getIdUrl($indexName, $type, $id)
+	{
+		if (self::isSingleTypeIndex())
+		{
+			return sprintf('%s/%s/%s-s', $indexName, self::$_singleTypeName, $type, $id);
+		}
+		else
+		{
+			return sprintf('%s/%s/%s', $indexName, $type, $id);
+		}
+	}
+
+	protected static function addTypeToDataForSingleTypeIndex($type, array &$data)
+	{
+		if (self::isSingleTypeIndex())
+		{
+			$data['type'] = $type;
+		}
+	}
+
+	protected static function getBulkActionEntry($action, $index, $type, $id, array $source = null)
+	{
+		$isSingleType = self::isSingleTypeIndex();
+
+		$actionLine = array(
+			$action => array(
+				'_index' => $index,
+				'_type' => $isSingleType ? self::$_singleTypeName : $type,
+				'_id' => $isSingleType ? "$type-$id" : $id
+			)
+		);
+
+		$bulk = json_encode($actionLine);
+
+		if (is_array($source))
+		{
+			if ($isSingleType && ($action == 'index' || $action == 'create'))
+			{
+				self::addTypeToDataForSingleTypeIndex($type, $source);
+			}
+
+			$bulk .= "\n" . json_encode($source);
+		}
+
+		return $bulk;
+	}
+
+	public static function getTypeAndIdFromHit($hit)
+	{
+		if (is_array($hit))
+		{
+			if (empty($hit['_type']) || $hit['_type'] == self::$_singleTypeName)
+			{
+				$typeAndId = explode('-', $hit['_id'], 2);
+			}
+			else
+			{
+				$typeAndId = array($hit['_type'], $hit['_id']);
+			}
+		}
+		else
+		{
+			if (empty($hit->_type) || $hit->_type == self::$_singleTypeName)
+			{
+				$typeAndId = explode('-', $hit->_id, 2);
+			}
+			else
+			{
+				$typeAndId = array($hit->_type, $hit->_id);
+			}
+		}
+
+		// make sure the ID is an int
+		$typeAndId[1] = intval($typeAndId[1]);
+
+		return $typeAndId;
+	}
+
+	/**
 	 * Make a call to Elastic Search
 	 *
 	 * @param string $method
@@ -415,7 +518,9 @@ class XenES_Api
 
 		if ($data)
 		{
-			$this->_httpClient->setRawData($data, 'text/json');
+			$contentType = $url == '_bulk' ? 'application/x-ndjson' : 'application/json';
+
+			$this->_httpClient->setRawData($data, $contentType);
 		}
 
 		try
