@@ -17,7 +17,7 @@ class SV_SearchImprovements_Search_IndexerProxy extends XenForo_Search_Indexer
         $this->_metadata = XenForo_Application::mapMerge($this->_metadata, $metadata);
     }
 
-    public function clearProxyMetaData(array $metadata)
+    public function clearProxyMetaData()
     {
         $this->_metadata = [];
     }
