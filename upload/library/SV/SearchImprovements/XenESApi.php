@@ -204,7 +204,7 @@ class XenES_Api
 		$json = json_encode($dsl);
 		if ($options->esLogDSL)
 		{
-			XenForo_Error::debug($json);
+			XenForo_Error::logException(new \Exception($json), false);
 		}
 		$response = self::getInstance()->call(Zend_Http_Client::POST,
 			sprintf('%s/_search', $indexName),
