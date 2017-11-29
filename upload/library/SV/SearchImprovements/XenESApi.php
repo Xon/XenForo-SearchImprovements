@@ -182,7 +182,7 @@ class XenES_Api
 
 		return self::getInstance()->call(Zend_Http_Client::POST,
 			'_bulk',
-			implode("\n", $deletes)
+			implode("\n", $deletes) . "\n"
 		);
 	}
 
@@ -427,7 +427,7 @@ class XenES_Api
 	{
 		if (self::isSingleTypeIndex())
 		{
-			return sprintf('%s/%s/%s-s', $indexName, self::$_singleTypeName, $type, $id);
+			return sprintf('%s/%s/%s-%s', $indexName, self::$_singleTypeName, $type, $id);
 		}
 		else
 		{
