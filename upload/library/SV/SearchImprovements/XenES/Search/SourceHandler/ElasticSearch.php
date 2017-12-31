@@ -20,7 +20,10 @@ class SV_SearchImprovements_XenES_Search_SourceHandler_ElasticSearch extends XFC
         $options = XenForo_Application::getOptions();
         if ($options->searchImpov_simpleQuerySyntax)
         {
-            return $query;
+            // rewrite unmatched / into \/ because this causes simple_query_string to throw
+            // https://www.elastic.co/guide/en/elasticsearch/reference/6.x/query-dsl-simple-query-string-query.html
+            // Lies on it not throwing!
+            return str_replace('/','\/', $query);
         }
 
         return parent::parseQuery($query);
