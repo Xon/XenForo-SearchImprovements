@@ -69,11 +69,14 @@ class SV_SearchImprovements_XenES_Model_Elasticsearch extends XFCP_SV_SearchImpr
             {
                 // our change
                 $expectedMapping = static::$optimizedGenericMapping;
-                $handler = $searchContentTypes[$type];
-                if ($handler && is_callable([$handler, 'getCustomMapping']))
+                if (isset($searchContentTypes[$type]))
                 {
-                    /** @noinspection PhpUndefinedMethodInspection */
-                    $expectedMapping = $handler->getCustomMapping($expectedMapping);
+                    $handler = $searchContentTypes[$type];
+                    if ($handler && is_callable([$handler, 'getCustomMapping']))
+                    {
+                        /** @noinspection PhpUndefinedMethodInspection */
+                        $expectedMapping = $handler->getCustomMapping($expectedMapping);
+                    }
                 }
                 $optimize = $this->_verifyMapping($mappings->$type, $expectedMapping);
             }
