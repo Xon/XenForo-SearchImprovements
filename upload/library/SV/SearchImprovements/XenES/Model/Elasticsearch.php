@@ -107,7 +107,7 @@ class SV_SearchImprovements_XenES_Model_Elasticsearch extends XFCP_SV_SearchImpr
             $extra = $handler->getCustomMapping($extra);
         }
         $extra = $this->getElasticSearchMapping($extra);
-        parent::optimizeMapping($type, $deleteFirst, $extra);
+        return parent::optimizeMapping($type, $deleteFirst, $extra);
     }
 
     /**
