@@ -156,6 +156,18 @@ class SV_SearchImprovements_XenES_Model_Elasticsearch extends XFCP_SV_SearchImpr
     public function recreateIndex()
     {
         parent::recreateIndex();
+
+        /** @var SV_ElasticEss_Model $elasticEssModel */
+        $elasticEssModel = $this->getModelFromCache('SV_ElasticEss_Model');
+        $elasticEssModel->updateIndexSettings();
+
+        if (SV_ElasticEss_Globals::isSingleTypeIndex())
+        {
+            $this->optimizeMapping(XenES_Api::getSingleTypeName(), true);
+
+            return;
+        }
+
         if ($this->hasOptimizedIndex)
         {
             return;
@@ -169,7 +181,10 @@ class SV_SearchImprovements_XenES_Model_Elasticsearch extends XFCP_SV_SearchImpr
         {
             if (is_callable([$handler, 'getCustomMapping']))
             {
-                $this->optimizeMapping($type, true);
+                if (!$this->optimizeMapping($type, true))
+                {
+                    XenForo_Error::debug("Updating mapping for {$type} failed");
+                }
             }
         }
     }
