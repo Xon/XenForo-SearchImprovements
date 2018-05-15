@@ -1,5 +1,6 @@
 <?php
 
+class XFCP_SV_SearchImprovements_XenES_ControllerAdmin_Elasticsearch extends XenES_ControllerAdmin_Elasticsearch {}
 class XFCP_SV_SearchImprovements_XenForo_ControllerAdmin_Home extends XenForo_ControllerAdmin_Home {}
 class XFCP_SV_SearchImprovements_XenForo_ControllerPublic_Search extends XenForo_ControllerPublic_Search {}
 class XFCP_SV_SearchImprovements_XenForo_ControllerPublic_Account extends XenForo_ControllerPublic_Account {}

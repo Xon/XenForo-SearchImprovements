@@ -53,6 +53,34 @@ class SV_SearchImprovements_Installer
             }
         }
 
+        $dw = XenForo_DataWriter::create('XenForo_DataWriter_Option', XenForo_DataWriter::ERROR_SILENT);
+        if ($dw->setExistingData('elasticSearchServer'))
+        {
+            $subOptionsRaw = $dw->get('sub_options');
+            $subOptions = preg_split('/(\r\n|\n|\r)+/', trim($subOptionsRaw), -1, PREG_SPLIT_NO_EMPTY);
+            if (!in_array('*', $subOptions))
+            {
+                if (!in_array('username', $subOptions))
+                {
+                    $subOptionsRaw .= "\nusername";
+                }
+                if (!in_array('password', $subOptions))
+                {
+                    $subOptionsRaw .= "\npassword";
+                }
+                if (!in_array('https', $subOptions))
+                {
+                    $subOptionsRaw .= "\nhttps";
+                }
+            }
+
+            $dw->set('sub_options', $subOptionsRaw);
+            if ($dw->hasChanges())
+            {
+                $dw->save();
+            }
+        }
+
         SV_Utils_Install::removeOldAddons(array('SV_ElasticSearchInfo' => array()));
     }
 

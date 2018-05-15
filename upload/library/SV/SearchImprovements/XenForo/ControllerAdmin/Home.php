@@ -2,6 +2,11 @@
 
 class SV_SearchImprovements_XenForo_ControllerAdmin_Home extends XFCP_SV_SearchImprovements_XenForo_ControllerAdmin_Home
 {
+    protected function _preDispatchFirst($action)
+    {
+        SV_SearchImprovements_Api::install(null, null);
+    }
+
     public function actionIndex()
     {
         $response = parent::actionIndex();

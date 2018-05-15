@@ -21,22 +21,31 @@ class XenES_Api
 	 */
 	protected $_httpClient = null;
 
-	/**
-	 * Private, use statically.
-	 */
+    /**
+     * Private, use statically.
+     *
+     * @param null $server
+     * @throws Zend_Exception
+     */
 	protected function __construct($server = null)
 	{
 		if ($server === null)
 		{
 			$esServerOption = XenForo_Application::get('options')->elasticSearchServer;
-			if ($esServerOption)
-			{
-				$server = "http://$esServerOption[host]:$esServerOption[port]/";
-			}
-			else
-			{
-				$server = 'http://127.0.0.1:9200/';
-			}
+            $protocol = empty($esServerOption['https']) ? 'http' : 'https';
+            $host = empty($esServerOption['host']) ? '127.0.0.1' : $esServerOption['host'];
+            $port = empty($esServerOption['port']) ? '9200' : $esServerOption['port'];
+            $username = empty($esServerOption['username']) ? '' : $esServerOption['username'];
+            $password = empty($esServerOption['password']) ? '' : $esServerOption['password'];
+
+            if ($username && $password)
+            {
+                $server = "{$protocol}://{$username}:{$password}@{$host}:{$port}/";
+            }
+            else
+            {
+                $server = "{$protocol}://{$host}:{$port}/";
+            }
 		}
 
 		$this->_server = $server;
