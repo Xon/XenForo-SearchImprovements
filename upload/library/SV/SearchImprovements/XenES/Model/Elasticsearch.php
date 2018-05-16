@@ -2,6 +2,12 @@
 
 class SV_SearchImprovements_XenES_Model_Elasticsearch extends XFCP_SV_SearchImprovements_XenES_Model_Elasticsearch
 {
+    public function __construct()
+    {
+        SV_SearchImprovements_Api::install();
+        parent::__construct();
+    }
+
     public function getSingleTypeMergedOptimizableMappings()
     {
         /** @var XenForo_Model_Search $searchModel */

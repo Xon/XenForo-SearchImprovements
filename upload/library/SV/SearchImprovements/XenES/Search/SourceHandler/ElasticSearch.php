@@ -2,6 +2,12 @@
 
 class SV_SearchImprovements_XenES_Search_SourceHandler_ElasticSearch extends XFCP_SV_SearchImprovements_XenES_Search_SourceHandler_ElasticSearch
 {
+    public function __construct()
+    {
+        SV_SearchImprovements_Api::install();
+        parent::__construct();
+    }
+
     public function executeSearch($searchQuery, $titleOnly, array $processedConstraints, array $orderParts,
                                   $groupByDiscussionType, $maxResults, XenForo_Search_DataHandler_Abstract $typeHandler = null)
     {
