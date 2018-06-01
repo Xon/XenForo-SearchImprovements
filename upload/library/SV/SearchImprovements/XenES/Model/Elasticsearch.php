@@ -163,11 +163,14 @@ class SV_SearchImprovements_XenES_Model_Elasticsearch extends XFCP_SV_SearchImpr
     {
         parent::recreateIndex();
 
-        /** @var SV_ElasticEss_Model $elasticEssModel */
-        $elasticEssModel = $this->getModelFromCache('SV_ElasticEss_Model');
-        $elasticEssModel->updateIndexSettings();
+        if (class_exists('SV_ElasticEss_Globals'))
+        {
+            /** @var SV_ElasticEss_Model $elasticEssModel */
+            $elasticEssModel = $this->getModelFromCache('SV_ElasticEss_Model');
+            $elasticEssModel->updateIndexSettings();
+        }
 
-        if (SV_ElasticEss_Globals::isSingleTypeIndex())
+        if (XenES_Api::isSingleTypeIndex())
         {
             $this->optimizeMapping(XenES_Api::getSingleTypeName(), true);
 
