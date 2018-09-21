@@ -72,6 +72,11 @@ class SV_SearchImprovements_XenES_Search_SourceHandler_ElasticSearch extends XFC
             $dsl['query']['filtered']['query']['simple_query_string'] = $dsl['query']['filtered']['query']['query_string'];
             unset($dsl['query']['filtered']['query']['query_string']);
         }
+        else if (isset($dsl['query']['bool']['must'][0]['query_string']))
+        {
+            $dsl['query']['bool']['must'][0]['simple_query_string'] = $dsl['query']['bool']['must'][0]['query_string'];
+            unset($dsl['query']['bool']['must'][0]['query_string']);
+        }
         else if (isset($dsl['query']['bool']['must']['query_string']))
         {
             $dsl['query']['bool']['must']['simple_query_string'] = $dsl['query']['bool']['must']['query_string'];
